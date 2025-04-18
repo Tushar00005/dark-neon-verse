@@ -19,7 +19,8 @@ type Notification = {
   read: boolean;
   from_user_id: string;
   related_post_id: string | null;
-  profiles: {
+  user_id: string;
+  from_user: {
     username: string;
     full_name: string | null;
     avatar_url: string | null;
@@ -38,13 +39,13 @@ export default function Notifications() {
         .from("notifications")
         .select(`
           *,
-          profiles:from_user_id(username, full_name, avatar_url)
+          from_user:from_user_id(username, full_name, avatar_url)
         `)
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
         
       if (error) throw error;
-      return data as Notification[];
+      return data as unknown as Notification[];
     },
     enabled: !!user
   });
@@ -76,7 +77,7 @@ export default function Notifications() {
   }
   
   function getNotificationText(notification: Notification) {
-    const username = notification.profiles?.full_name || notification.profiles?.username || 'Someone';
+    const username = notification.from_user?.full_name || notification.from_user?.username || 'Someone';
     
     switch (notification.type) {
       case 'like':
@@ -120,9 +121,9 @@ export default function Notifications() {
                   >
                     <div className="flex items-start gap-3">
                       <Avatar>
-                        <AvatarImage src={notification.profiles?.avatar_url || ""} />
+                        <AvatarImage src={notification.from_user?.avatar_url || ""} />
                         <AvatarFallback>
-                          {notification.profiles?.username.charAt(0).toUpperCase() || "U"}
+                          {notification.from_user?.username?.charAt(0).toUpperCase() || "U"}
                         </AvatarFallback>
                       </Avatar>
                       
@@ -134,7 +135,7 @@ export default function Notifications() {
                                 to={`/profile/${notification.from_user_id}`} 
                                 className="font-medium hover:underline"
                               >
-                                {notification.profiles?.full_name || notification.profiles?.username}
+                                {notification.from_user?.full_name || notification.from_user?.username}
                               </Link>{" "}
                               <span className="text-muted-foreground">
                                 {getNotificationText(notification)}

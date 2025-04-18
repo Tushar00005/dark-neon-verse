@@ -25,7 +25,7 @@ type Message = {
   receiver_id: string;
   content: string;
   created_at: string;
-  sender_profile: {
+  sender: {
     username: string;
     full_name: string | null;
     avatar_url: string | null;
@@ -64,7 +64,7 @@ export default function Messages() {
         .from("messages")
         .select(`
           *,
-          sender_profile:sender_id(username, full_name, avatar_url)
+          sender:sender_id(username, full_name, avatar_url)
         `)
         .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
         .or(`sender_id.eq.${selectedUser.id},receiver_id.eq.${selectedUser.id}`)
@@ -77,7 +77,7 @@ export default function Messages() {
         msg => 
           (msg.sender_id === user.id && msg.receiver_id === selectedUser.id) || 
           (msg.sender_id === selectedUser.id && msg.receiver_id === user.id)
-      ) as Message[];
+      ) as unknown as Message[];
     },
     enabled: !!user && !!selectedUser
   });
@@ -191,9 +191,9 @@ export default function Messages() {
                             <div className="flex gap-3 max-w-[70%]">
                               {!isOwnMessage && (
                                 <Avatar className="h-8 w-8">
-                                  <AvatarImage src={message.sender_profile.avatar_url || ""} />
+                                  <AvatarImage src={message.sender.avatar_url || ""} />
                                   <AvatarFallback>
-                                    {message.sender_profile.username.charAt(0)}
+                                    {message.sender.username.charAt(0)}
                                   </AvatarFallback>
                                 </Avatar>
                               )}

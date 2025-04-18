@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { PageTransition } from "@/components/ui/motion";
@@ -41,7 +40,6 @@ export default function Settings() {
     confirmPassword: ""
   });
   
-  // Update form when profile data loads
   useState(() => {
     if (profile) {
       setGeneralForm({
@@ -71,7 +69,6 @@ export default function Settings() {
       return;
     }
     
-    // In a real app, you would call supabase.auth.updateUser() here
     toast.success("Password updated successfully");
     setPasswordForm({
       currentPassword: "",
@@ -86,7 +83,6 @@ export default function Settings() {
     );
     
     if (confirmed) {
-      // In a real app, you would call supabase.auth.admin.deleteUser() here
       toast.success("Account deleted");
       signOut();
     }
@@ -118,7 +114,6 @@ export default function Settings() {
             <TabsTrigger value="danger">Danger Zone</TabsTrigger>
           </TabsList>
           
-          {/* General Settings */}
           <TabsContent value="general">
             <Card>
               <CardHeader>
@@ -205,7 +200,6 @@ export default function Settings() {
             </Card>
           </TabsContent>
           
-          {/* Notification Settings */}
           <TabsContent value="notifications">
             <Card>
               <CardHeader>
@@ -306,7 +300,6 @@ export default function Settings() {
             </Card>
           </TabsContent>
           
-          {/* Security Settings */}
           <TabsContent value="security">
             <Card>
               <CardHeader>
@@ -409,7 +402,6 @@ export default function Settings() {
             </Card>
           </TabsContent>
           
-          {/* Danger Zone */}
           <TabsContent value="danger">
             <Card variant="destructive">
               <CardHeader>
