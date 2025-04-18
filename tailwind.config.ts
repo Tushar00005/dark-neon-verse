@@ -61,6 +61,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom social media app colors
+				dark: {
+					DEFAULT: '#1A1F2C',
+					lighter: '#221F26', 
+					secondary: '#2A2438'
+				},
+				neon: {
+					purple: '#8B5CF6',
+					purple2: '#9b87f5',
+					blue: '#1EAEDB',
 				}
 			},
 			borderRadius: {
