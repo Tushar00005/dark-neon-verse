@@ -403,7 +403,7 @@ export default function Settings() {
           </TabsContent>
           
           <TabsContent value="danger">
-            <Card variant="destructive">
+            <Card variant="glassDark" className="border-destructive/50">
               <CardHeader>
                 <CardTitle>Danger Zone</CardTitle>
                 <CardDescription>
