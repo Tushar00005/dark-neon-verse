@@ -1,9 +1,11 @@
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Bell, Home, Search, Settings, User, LogIn } from "lucide-react";
+import { Bell, Home, LogOut, MessageSquare, Search, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/hooks/use-auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Animation variants
 const navVariants = {
@@ -28,6 +30,13 @@ const itemVariants = {
 
 export function Navbar() {
   const isMobile = useIsMobile();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
   
   return (
     <motion.header 
@@ -43,22 +52,38 @@ export function Navbar() {
         
         <div className="hidden md:flex items-center gap-6">
           {/* Desktop Navigation */}
-          <motion.nav className="flex items-center gap-2" variants={itemVariants}>
-            <NavLink to="/feed" icon={<Home size={20} />} label="Home" />
-            <NavLink to="/explore" icon={<Search size={20} />} label="Explore" />
-            <NavLink to="/notifications" icon={<Bell size={20} />} label="Notifications" />
-            <NavLink to="/profile" icon={<User size={20} />} label="Profile" />
-            <NavLink to="/settings" icon={<Settings size={20} />} label="Settings" />
-          </motion.nav>
-          
-          <motion.div variants={itemVariants} className="flex items-center gap-2">
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/login">Log In</Link>
-            </Button>
-            <Button variant="default" size="sm" className="bg-neon-purple hover:bg-neon-purple/80" asChild>
-              <Link to="/signup">Sign Up</Link>
-            </Button>
-          </motion.div>
+          {user ? (
+            <>
+              <motion.nav className="flex items-center gap-2" variants={itemVariants}>
+                <NavLink to="/feed" icon={<Home size={20} />} label="Feed" />
+                <NavLink to="/explore" icon={<Search size={20} />} label="Explore" />
+                <NavLink to="/notifications" icon={<Bell size={20} />} label="Notifications" />
+                <NavLink to="/messages" icon={<MessageSquare size={20} />} label="Messages" />
+                <NavLink to="/profile" icon={<User size={20} />} label="Profile" />
+                <NavLink to="/settings" icon={<Settings size={20} />} label="Settings" />
+              </motion.nav>
+              
+              <motion.div variants={itemVariants} className="flex items-center gap-3">
+                <Avatar className="h-9 w-9 border border-white/10">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                  <AvatarFallback>UN</AvatarFallback>
+                </Avatar>
+                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                  <LogOut size={16} className="mr-2" />
+                  Sign Out
+                </Button>
+              </motion.div>
+            </>
+          ) : (
+            <motion.div variants={itemVariants} className="flex items-center gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/login">Log In</Link>
+              </Button>
+              <Button variant="default" size="sm" className="bg-neon-purple hover:bg-neon-purple/80" asChild>
+                <Link to="/signup">Sign Up</Link>
+              </Button>
+            </motion.div>
+          )}
         </div>
         
         {/* Mobile Navigation - Fixed at Bottom */}
@@ -69,11 +94,20 @@ export function Navbar() {
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            <MobileNavLink to="/feed" icon={<Home size={24} />} />
-            <MobileNavLink to="/explore" icon={<Search size={24} />} />
-            <MobileNavLink to="/notifications" icon={<Bell size={24} />} />
-            <MobileNavLink to="/profile" icon={<User size={24} />} />
-            <MobileNavLink to="/login" icon={<LogIn size={24} />} />
+            {user ? (
+              <>
+                <MobileNavLink to="/feed" icon={<Home size={24} />} />
+                <MobileNavLink to="/explore" icon={<Search size={24} />} />
+                <MobileNavLink to="/notifications" icon={<Bell size={24} />} />
+                <MobileNavLink to="/messages" icon={<MessageSquare size={24} />} />
+                <MobileNavLink to="/profile" icon={<User size={24} />} />
+              </>
+            ) : (
+              <>
+                <MobileNavLink to="/" icon={<Home size={24} />} />
+                <MobileNavLink to="/login" icon={<User size={24} />} />
+              </>
+            )}
           </motion.div>
         )}
       </div>
