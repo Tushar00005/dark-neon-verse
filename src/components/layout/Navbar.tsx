@@ -38,6 +38,15 @@ export function Navbar() {
     navigate("/");
   };
   
+  const getInitials = () => {
+    if (!user?.user_metadata?.full_name) return "UN";
+    const nameParts = user.user_metadata.full_name.split(" ");
+    if (nameParts.length >= 2) {
+      return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`;
+    }
+    return nameParts[0].charAt(0);
+  };
+  
   return (
     <motion.header 
       className="fixed top-0 left-0 right-0 z-50 py-4 px-6 glass border-b border-white/5"
@@ -65,8 +74,8 @@ export function Navbar() {
               
               <motion.div variants={itemVariants} className="flex items-center gap-3">
                 <Avatar className="h-9 w-9 border border-white/10">
-                  <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-                  <AvatarFallback>UN</AvatarFallback>
+                  <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name || "User"} />
+                  <AvatarFallback>{getInitials()}</AvatarFallback>
                 </Avatar>
                 <Button variant="outline" size="sm" onClick={handleSignOut}>
                   <LogOut size={16} className="mr-2" />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { PageTransition } from "@/components/ui/motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,7 +40,7 @@ export default function Settings() {
     confirmPassword: ""
   });
   
-  useState(() => {
+  useEffect(() => {
     if (profile) {
       setGeneralForm({
         full_name: profile.full_name || "",
@@ -49,7 +49,7 @@ export default function Settings() {
         avatar_url: profile.avatar_url || ""
       });
     }
-  });
+  }, [profile]);
   
   const handleSaveGeneral = async () => {
     try {
