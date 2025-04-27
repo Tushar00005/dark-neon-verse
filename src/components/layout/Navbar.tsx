@@ -1,5 +1,5 @@
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Bell, Home, LogOut, MessageSquare, Search, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ export function Navbar() {
   const isMobile = useIsMobile();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const handleSignOut = async () => {
     await signOut();
@@ -45,6 +46,10 @@ export function Navbar() {
       return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`;
     }
     return nameParts[0].charAt(0);
+  };
+  
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
   
   return (
@@ -64,12 +69,12 @@ export function Navbar() {
           {user ? (
             <>
               <motion.nav className="flex items-center gap-2" variants={itemVariants}>
-                <NavLink to="/feed" icon={<Home size={20} />} label="Feed" />
-                <NavLink to="/explore" icon={<Search size={20} />} label="Explore" />
-                <NavLink to="/notifications" icon={<Bell size={20} />} label="Notifications" />
-                <NavLink to="/messages" icon={<MessageSquare size={20} />} label="Messages" />
-                <NavLink to="/profile" icon={<User size={20} />} label="Profile" />
-                <NavLink to="/settings" icon={<Settings size={20} />} label="Settings" />
+                <NavLink to="/feed" icon={<Home size={20} />} label="Feed" active={isActive("/feed")} />
+                <NavLink to="/explore" icon={<Search size={20} />} label="Explore" active={isActive("/explore")} />
+                <NavLink to="/notifications" icon={<Bell size={20} />} label="Notifications" active={isActive("/notifications")} />
+                <NavLink to="/messages" icon={<MessageSquare size={20} />} label="Messages" active={isActive("/messages")} />
+                <NavLink to="/profile" icon={<User size={20} />} label="Profile" active={isActive("/profile")} />
+                <NavLink to="/settings" icon={<Settings size={20} />} label="Settings" active={isActive("/settings")} />
               </motion.nav>
               
               <motion.div variants={itemVariants} className="flex items-center gap-3">
@@ -105,16 +110,16 @@ export function Navbar() {
           >
             {user ? (
               <>
-                <MobileNavLink to="/feed" icon={<Home size={24} />} />
-                <MobileNavLink to="/explore" icon={<Search size={24} />} />
-                <MobileNavLink to="/notifications" icon={<Bell size={24} />} />
-                <MobileNavLink to="/messages" icon={<MessageSquare size={24} />} />
-                <MobileNavLink to="/profile" icon={<User size={24} />} />
+                <MobileNavLink to="/feed" icon={<Home size={24} />} active={isActive("/feed")} />
+                <MobileNavLink to="/explore" icon={<Search size={24} />} active={isActive("/explore")} />
+                <MobileNavLink to="/notifications" icon={<Bell size={24} />} active={isActive("/notifications")} />
+                <MobileNavLink to="/messages" icon={<MessageSquare size={24} />} active={isActive("/messages")} />
+                <MobileNavLink to="/profile" icon={<User size={24} />} active={isActive("/profile")} />
               </>
             ) : (
               <>
-                <MobileNavLink to="/" icon={<Home size={24} />} />
-                <MobileNavLink to="/login" icon={<User size={24} />} />
+                <MobileNavLink to="/" icon={<Home size={24} />} active={isActive("/")} />
+                <MobileNavLink to="/login" icon={<User size={24} />} active={isActive("/login")} />
               </>
             )}
           </motion.div>
@@ -125,11 +130,11 @@ export function Navbar() {
 }
 
 // Desktop Navigation Link
-function NavLink({ to, icon, label }: { to: string; icon: React.ReactNode; label: string }) {
+function NavLink({ to, icon, label, active = false }: { to: string; icon: React.ReactNode; label: string; active?: boolean }) {
   return (
     <Link 
       to={to}
-      className="flex items-center gap-1.5 px-3 py-2 rounded-md hover:bg-white/5 transition-all text-sm font-medium"
+      className={`flex items-center gap-1.5 px-3 py-2 rounded-md hover:bg-white/5 transition-all text-sm font-medium ${active ? 'bg-white/10 text-neon-purple' : ''}`}
     >
       {icon}
       <span>{label}</span>
@@ -138,11 +143,11 @@ function NavLink({ to, icon, label }: { to: string; icon: React.ReactNode; label
 }
 
 // Mobile Navigation Link
-function MobileNavLink({ to, icon }: { to: string; icon: React.ReactNode }) {
+function MobileNavLink({ to, icon, active = false }: { to: string; icon: React.ReactNode; active?: boolean }) {
   return (
     <Link 
       to={to}
-      className="p-3 text-gray-400 hover:text-neon-purple transition-colors"
+      className={`p-3 ${active ? 'text-neon-purple' : 'text-gray-400'} hover:text-neon-purple transition-colors`}
     >
       {icon}
     </Link>

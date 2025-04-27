@@ -30,6 +30,15 @@ export function PostItem({ post, onLike }: PostItemProps) {
     onLike(post.id, isLiked);
   };
   
+  const getInitials = () => {
+    if (!post.profiles.full_name) return post.profiles.username.charAt(0).toUpperCase();
+    const nameParts = post.profiles.full_name.split(" ");
+    if (nameParts.length >= 2) {
+      return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`.toUpperCase();
+    }
+    return nameParts[0].charAt(0).toUpperCase();
+  };
+  
   return (
     <ScaleIn>
       <Card variant="glassDark" className="overflow-hidden">
@@ -38,7 +47,7 @@ export function PostItem({ post, onLike }: PostItemProps) {
           <Link to={`/profile/${post.user_id}`} className="flex items-center gap-3">
             <Avatar>
               <AvatarImage src={post.profiles.avatar_url} alt={post.profiles.username} />
-              <AvatarFallback>{post.profiles.full_name?.charAt(0) || post.profiles.username.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{getInitials()}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <span className="font-medium">{post.profiles.full_name || post.profiles.username}</span>
@@ -65,6 +74,10 @@ export function PostItem({ post, onLike }: PostItemProps) {
                 src={post.media_url} 
                 alt="Post media" 
                 className="w-full h-auto max-h-96 object-cover"
+                onError={(e) => {
+                  // Handle image loading errors
+                  (e.target as HTMLImageElement).src = "/placeholder.svg";
+                }}
               />
             </div>
           )}

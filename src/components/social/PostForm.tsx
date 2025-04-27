@@ -38,13 +38,22 @@ export function PostForm({ onSubmit, isLoading = false }: PostFormProps) {
     setIsPreviewingMedia(false);
   };
   
+  const getInitials = () => {
+    if (!user?.user_metadata?.full_name) return "UN";
+    const nameParts = user.user_metadata.full_name.split(" ");
+    if (nameParts.length >= 2) {
+      return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`;
+    }
+    return nameParts[0].charAt(0);
+  };
+  
   return (
     <Card variant="glassDark" className="mb-6">
       <form onSubmit={handleSubmit} className="p-4">
         <div className="flex gap-3">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-            <AvatarFallback>UN</AvatarFallback>
+            <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.user_metadata?.full_name || "User"} />
+            <AvatarFallback>{getInitials()}</AvatarFallback>
           </Avatar>
           
           <div className="flex-1">
